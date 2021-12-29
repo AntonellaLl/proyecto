@@ -7,19 +7,16 @@ import (
 	"time"
 )
 
-//func holaMundo(w http.ResponseWriter, r *http.Request) { // En el paquete HTPP se llama a la funcion HandleFunc
-//fmt.Fprintf(w, "<h1>hola mundo</h1")
+// func HolaMundo(w http.ResponseWriter, r *http.Request) { // se crea una ruta mediante la funcion HandleFunc del paquete Htpp
+// 	fmt.Fprintf(w, "<h1>hola mundo</h1>")
+// }
 
-//}
-
-func Prueba(w http.ResponseWriter, r *http.Request) { // En el paquete HTPP se llama a la funcion HandleFunc
-	fmt.Fprintf(w, "<h1>hola mundo desde /prueba</h1>")
-
+func Prueba(w http.ResponseWriter, r *http.Request) { // se crea una ruta mediante la funcion HandleFunc del paquete Htpp
+	fmt.Fprintf(w, "<h1>hola mundo</h1>")
 }
 
-func Usuario(w http.ResponseWriter, r *http.Request) { // En el paquete HTPP se llama a la funcion HandleFunc
-	fmt.Fprintf(w, "<h1>hola Usuario</h1")
-
+func Usuario(w http.ResponseWriter, r *http.Request) { // se crea una ruta mediante la funcion HandleFunc del paquete Htpp
+	fmt.Fprintf(w, "<h1>hola mundo</h1>")
 }
 
 type mensaje struct {
@@ -32,12 +29,9 @@ func (m mensaje) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { // se crea una ruta mediante la funcion HandleFunc del paquete Htpp
-	// 	fmt.Fprintf(w, "<h1>hola mundo</h1>")
-	// })
 
 	msg := mensaje{
-		msg: "hola mundo de nuevo",
+		msg: "hola mundo de nuevo ",
 	}
 
 	mux := http.NewServeMux()
@@ -45,27 +39,20 @@ func main() {
 
 	mux.Handle("/", fs)
 
-	http.ListenAndServe(":8080", mux) // esto escucha en el puerto que le indiquemos, que en este caso es 8080 y luego se le pasa un enrutador, un servermux
+	mux.HandleFunc("/prueba", Prueba)
 
 	mux.HandleFunc("/usuario", Usuario)
 
-	mux.HandleFunc("/pruba", Prueba)
-
-	// se crea el servidor para que maneje las peticiones del usuario
-
-	http.ListenAndServe(":8080", mux)
-
 	mux.Handle("/hola", msg)
 
-	// creo una estructura SERVER :
-
-	server := &http.Server{ // & indica que queremos crear un puntero de una estructura Server
+	server := &http.Server{ // con la & se indica que se quiere crear un puntero de una estructura server
 		Addr:           ":8080",
 		Handler:        mux,
-		ReadTimeout:    10 * time.Second, // tiempo de lectura que debe esperar el servidor
-		WriteTimeout:   10 * time.Second, // tiempo de escritura que debe esperar el servidor
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
+
 	log.Println("Listening...")
 	log.Fatal(server.ListenAndServe())
 
